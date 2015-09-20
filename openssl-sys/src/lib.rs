@@ -556,6 +556,8 @@ extern "C" {
 
     pub fn SSL_CTX_new(method: *const SSL_METHOD) -> *mut SSL_CTX;
     pub fn SSL_CTX_free(ctx: *mut SSL_CTX);
+    pub fn SSL_CTX_set_timeout(ctx: *mut SSL_CTX, timeout: c_long) -> c_long;
+    pub fn SSL_CTX_get_timeout(ctx: *mut SSL_CTX) -> c_long;
     pub fn SSL_CTX_set_verify(ctx: *mut SSL_CTX, mode: c_int,
                               verify_callback: Option<extern fn(c_int, *mut X509_STORE_CTX) -> c_int>);
     pub fn SSL_CTX_set_verify_depth(ctx: *mut SSL_CTX, depth: c_int);

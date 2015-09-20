@@ -14,6 +14,7 @@ use std::sync::{Once, ONCE_INIT, Arc, Mutex};
 use std::ops::{Deref, DerefMut};
 use std::cmp;
 use std::any::Any;
+use std::time::Duration;
 #[cfg(any(feature = "npn", feature = "alpn"))]
 use libc::{c_uchar, c_uint};
 #[cfg(any(feature = "npn", feature = "alpn"))]
@@ -444,6 +445,20 @@ impl SslContext {
         }
 
         Ok(ctx)
+    }
+
+    /// Sets the timeout for newly created sessions. Returns the previous one.
+    pub fn set_timeout(&mut self, timeout: Duration) -> Duration {
+        let previous = unsafe {
+            ffi::SSL_CTX_set_timeout(self.ctx, timeout.as_secs() as c_long)
+        };
+        Duration::from_secs(previous as u64)
+    }
+
+    /// Get the current timeout for newly created sessions.
+    pub fn get_timeout(&mut self) -> Duration {
+        let timeout = unsafe { ffi::SSL_CTX_get_timeout(self.ctx) };
+        Duration::from_secs(timeout as u64)
     }
 
     /// Configures the certificate verification method for new connections.
